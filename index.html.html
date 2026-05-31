@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>光纪摄影 · 摄影师作品集</title>
+    <style>
+        /* 全局重置与基调 —— 干净、留白，突出摄影作品 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #faf9f7;  /* 暖白基底，仿若画廊墙面 */
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            color: #1e1e1e;
+            line-height: 1.5;
+            padding: 2rem 1.5rem;
+        }
+
+        /* 自定义字体加载 (Inter 干净易读，提升现代感) */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600&display=swap');
+
+        /* 页头区域：简洁的签名与描述 */
+        .header {
+            max-width: 1280px;
+            margin: 0 auto 3rem auto;
+            padding: 0 0.5rem;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            font-weight: 300;
+            letter-spacing: -0.02em;
+            margin-bottom: 0.2rem;
+            border-left: 6px solid #b7a48b;  /* 浅木色，呼应摄影质感 */
+            padding-left: 1.2rem;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            font-weight: 300;
+            color: #4a4a4a;
+            max-width: 620px;
+            margin-top: 0.6rem;
+            margin-left: 1.8rem;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 1.2rem;
+        }
+
+        /* 相册网格 —— 核心展示区 */
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.8rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+
+        /* 每个作品卡片 */
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;            /* 微圆角，柔和 */
+            background-color: #eae7e2;       /* 加载时背景色 */
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.03);
+            transition: box-shadow 0.25s ease, transform 0.3s ease;
+            aspect-ratio: 4 / 3;              /* 统一比例，可根据实际照片调整，常用3:2或4:3，这里用4:3显示更沉稳 */
+            cursor: pointer;
+        }
+
+        /* 悬停时轻微浮起，聚焦照片 */
+        .gallery-item:hover {
+            box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.15);
+            transform: translateY(-4px);
+        }
+
+        /* 图片本身 */
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;                /* 保证填充区域且不变形，裁切边缘，适合统一网格 */
+            display: block;
+            transition: transform 0.5s ease;
+            background-color: #d6d2cb;        /* 占位底色 */
+        }
+
+        .gallery-item:hover img {
+            transform: scale(1.02);            /* 极细微缩放，增加灵动感 */
+        }
+
+        /* 照片信息条 (悬停出现或常驻，这里采用常驻半透明，低调但可读) */
+        .photo-info {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(20, 20, 20, 0.7), transparent);
+            color: #f0f0f0;
+            padding: 1.8rem 1rem 0.8rem 1rem;
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.25s ease, transform 0.25s ease;
+            font-weight: 300;
+            backdrop-filter: blur(2px);
+            border-bottom-left-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+        .gallery-item:hover .photo-info {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .photo-info .title {
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.3px;
+            margin-bottom: 0.1rem;
+            text-shadow: 0 1px 4px rgba(0,0,0,0.3);
+        }
+
+        .photo-info .sub {
+            font-size: 0.85rem;
+            opacity: 0.8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .photo-info .sub span {
+            background: rgba(255,255,255,0.15);
+            padding: 0.2rem 0.6rem;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            backdrop-filter: blur(2px);
+        }
+
+        /* 页脚区域，简单的版权与说明 */
+        .footer {
+            max-width: 1280px;
+            margin: 4rem auto 0 auto;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #8b8b8b;
+            border-top: 1px solid #e2dfda;
+            padding-top: 2rem;
+            font-weight: 300;
+        }
+
+        .footer a {
+            color: #6f5e4e;
+            text-decoration: none;
+            border-bottom: 1px dotted #c0b4a8;
+        }
+
+        .footer a:hover {
+            color: #3a2e24;
+        }
+
+        /* 简单响应式微调 */
+        @media (max-width: 600px) {
+            body { padding: 1.5rem 1rem; }
+            .header h1 { font-size: 2.2rem; }
+            .gallery { gap: 1rem; }
+        }
+
+        /* 占位提示风格（仅当图片未加载时显示替代文字，但一般不会，为了演示清晰） */
+        .gallery-item img {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: #5b4f44;
+            text-align: center;
+            /* 如果图片alt显示，会有样式，这里无需额外处理 */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>光纪摄影 </h1>
+        <p>捕捉光影，凝固情感。以下精选作品呈现了我在人像、风光与纪实中的视觉叙事。</p>
+    </div>
+
+    <!-- 相册网格：每一块 gallery-item 都是一幅作品，请替换为自己的照片 -->
+    <div class="gallery">
+
+        <!-- 作品 1 （使用 picsum 固定 id 保证一致性，建议替换为您的图片路径） -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1015/600/450" alt="山脊晨雾" loading="lazy">
+            <div class="photo-info">
+                <div class="title">山脊晨雾</div>
+                <div class="sub">意大利多洛米蒂 · 2024 <span>婚礼</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 2 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1043/600/450" alt="静谧湖泊" loading="lazy">
+            <div class="photo-info">
+                <div class="title">静谧湖泊</div>
+                <div class="sub">奥地利哈尔施塔特 · 2023 <span>风光</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 3 人像 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1006/600/450" alt="林间肖像" loading="lazy">
+            <div class="photo-info">
+                <div class="title">林间肖像</div>
+                <div class="sub">维也纳 · 2024 <span>人像</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 4 城市 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1044/600/450" alt="夜行巴黎" loading="lazy">
+            <div class="photo-info">
+                <div class="title">夜行巴黎</div>
+                <div class="sub">巴黎 · 2023 <span>纪实</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 5 黑白 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/107/600/450" alt="等待" loading="lazy">
+            <div class="photo-info">
+                <div class="title">等待</div>
+                <div class="sub">纽约地铁 · 2022 <span>黑白</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 6 抽象 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/20/600/450" alt="光影构成" loading="lazy">
+            <div class="photo-info">
+                <div class="title">光影构成</div>
+                <div class="sub">柏林 · 2024 <span>抽象</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 7 自然细节 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1084/600/450" alt="秋叶脉络" loading="lazy">
+            <div class="photo-info">
+                <div class="title">秋叶脉络</div>
+                <div class="sub">京都 · 2023 <span>微距</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 8 建筑 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1048/600/450" alt="几何之外" loading="lazy">
+            <div class="photo-info">
+                <div class="title">几何之外</div>
+                <div class="sub">上海 · 2024 <span>建筑</span></div>
+            </div>
+        </div>
+
+        <!-- 作品 9 海景 -->
+        <div class="gallery-item">
+            <img src="https://picsum.photos/id/1011/600/450" alt="孤岛浪潮" loading="lazy">
+            <div class="photo-info">
+                <div class="title">孤岛浪潮</div>
+                <div class="sub">冰岛维克 · 2022 <span>风光</span></div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- 简单的说明区域：如何替换为自己的作品 -->
+    <div class="footer">
+         每一张照片都在讲述一个故事<br>
+         <!--当前展示图片来自 <a href="https://picsum.photos/" target="_blank" rel="noopener">Picsum 占位图</a>，请将 <code style="background:#eee; padding:2px 6px;">&lt;img src="..."&gt;</code> 中的链接替换为您自己的作品路径。-->
+        © 2026 [光纪摄影] · 保留所有光影瞬间
+    </div>
+
+    <!-- 说明：本相册采用响应式网格，图片比例4:3，如需调整为3:2或1:1，只需修改 .gallery-item 中的 aspect-ratio 即可。 -->
+    <!-- 您可以直接复制本文件，在浏览器中打开，然后替换图片链接、标题等信息。 -->
+</body>
+</html>
